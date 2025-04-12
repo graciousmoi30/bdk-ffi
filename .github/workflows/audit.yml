@@ -1,0 +1,25 @@
+name: Audit
+
+on:
+  push:
+    paths:
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+  schedule:
+    - cron: '0 0 * * 0' # Once per week
+
+jobs:
+  security_audit:
+    name: Security audit
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: bdk-ffi
+    steps:
+      - name: "Check out PR branch"
+        uses: actions/checkout@v4
+
+      - name: "Run audit"
+        run: |
+          cargo install cargo-audit
+          cargo-audit audit
